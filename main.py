@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from fake.fake_tello import FakeTello
 import configargparse
 
 import cv2 as cv
@@ -64,11 +65,11 @@ def main():
     in_flight = False
 
     # Camera preparation
-    tello = Tello()
+    tello = FakeTello()
     tello.connect()
     tello.streamon()
 
-    cap = tello.get_frame_read()
+    cap = cv.VideoCapture(0) 
 
     # Init Tello Controllers
     gesture_controller = TelloGestureController(tello)
@@ -138,7 +139,12 @@ def main():
                 number = key - 48
 
         # Camera capture
-        image = cap.frame
+        success, image = cap.read()
+
+        # Ensure file was read successfully
+        if not success:
+            print("bad read!")
+            break
 
         debug_image, gesture_id = gesture_detector.recognize(image, number, mode)
         gesture_buffer.add_gesture(gesture_id)
