@@ -12,6 +12,7 @@ from djitellopy import Tello
 from gestures import *
 
 import threading
+import time
 
 
 def get_args():
@@ -86,6 +87,8 @@ def main():
             keyboard_controller.control(key)
         else:
             gesture_controller.gesture_control(gesture_buffer)
+        
+        time.sleep(0.3)
 
     def tello_battery(tello):
         global battery_status

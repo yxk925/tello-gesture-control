@@ -14,7 +14,8 @@ class TelloGestureController:
 
     def gesture_control(self, gesture_buffer):
         gesture_id = gesture_buffer.get_gesture()
-        print("GESTURE", gesture_id)
+        if gesture_id is not None:
+            print("got GESTURE", gesture_id)
 
         if not self._is_landing:
             if gesture_id == 0:  # Forward

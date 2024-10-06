@@ -27,5 +27,5 @@ class FakeTello:
     
   def send_rc_control(self, left_right_velocity, forw_back_velocity,
                                        up_down_velocity, yaw_velocity):
-    print(f"send_rc_control left_right_velocity:{left_right_velocity}, forw_back_velocity:{forw_back_velocity},
-          up_down_velocity:{up_down_velocity}, yaw_velocity:{yaw_velocity}")
+    print(f"send_rc_control left_right_velocity:{left_right_velocity}, forw_back_velocity:{forw_back_velocity},\
+        up_down_velocity:{up_down_velocity}, yaw_velocity:{yaw_velocity}")
