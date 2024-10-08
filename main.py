@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from fake.fake_tello import FakeTello
+import rospy
+from agents.move_agent import MoveAgent
 import configargparse
 
 import cv2 as cv
@@ -8,7 +9,6 @@ import cv2 as cv
 from gestures.tello_gesture_controller import TelloGestureController
 from utils import CvFpsCalc
 
-from djitellopy import Tello
 from gestures import *
 
 import threading
@@ -64,9 +64,11 @@ def main():
     KEYBOARD_CONTROL = args.is_keyboard
     WRITE_CONTROL = False
     in_flight = False
+    
+    rospy.init_node("gesture_control")
 
     # Camera preparation
-    tello = FakeTello()
+    tello = MoveAgent()
     tello.connect()
     tello.streamon()
 
@@ -106,7 +108,8 @@ def main():
 
     tello.move_down(20)
 
-    while True:
+    rate = rospy.Rate(30) # hz
+    while not rospy.is_shutdown():
         fps = cv_fps_calc.get()
 
         # Process Key (ESC: end)
@@ -162,6 +165,8 @@ def main():
         cv.putText(debug_image, "Battery: {}".format(battery_status), (5, 720 - 5),
                    cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv.imshow('Tello Gesture Recognition', debug_image)
+        
+        rate.sleep()
 
     tello.land()
     tello.end()

@@ -1,9 +1,10 @@
-from djitellopy import Tello
+import rospy
+from agents.move_agent import MoveAgent
 
 
 class TelloGestureController:
-    def __init__(self, tello: Tello):
-        self.tello = tello
+    def __init__(self, move_agent: MoveAgent):
+        self.move_agent = move_agent
         self._is_landing = False
 
         # RC control velocities
@@ -14,37 +15,38 @@ class TelloGestureController:
 
     def gesture_control(self, gesture_buffer):
         gesture_id = gesture_buffer.get_gesture()
-        if gesture_id is not None:
-            print("got GESTURE", gesture_id)
+        
+        if gesture_id is None:
+            return
+        
+        print("got GESTURE", gesture_id)
 
         if not self._is_landing:
             if gesture_id == 0:  # Forward
-                self.forw_back_velocity = 30
+                self.move_agent.stop()
             elif gesture_id == 1:  # STOP
-                self.forw_back_velocity = self.up_down_velocity = \
-                    self.left_right_velocity = self.yaw_velocity = 0
+                rospy.loginfo("Unsupport STOP")
+                #self.move_agent.stop()
             if gesture_id == 5:  # Back
-                self.forw_back_velocity = -30
+                self.move_agent.forward(0.3)
 
             elif gesture_id == 2:  # UP
-                self.up_down_velocity = 25
+                self.move_agent.backward(0.3)
             elif gesture_id == 4:  # DOWN
-                self.up_down_velocity = -25
+                rospy.loginfo("Unsupport DOWN")
+                
 
             elif gesture_id == 3:  # LAND
-                self._is_landing = True
-                self.forw_back_velocity = self.up_down_velocity = \
-                    self.left_right_velocity = self.yaw_velocity = 0
-                self.tello.land()
+                rospy.loginfo("Unsupport LAND")
 
             elif gesture_id == 6: # LEFT
-                self.left_right_velocity = 20
+                self.move_agent.turnLeft()
             elif gesture_id == 7: # RIGHT
-                self.left_right_velocity = -20
-
+                self.move_agent.turnRight()
             elif gesture_id == -1:
-                self.forw_back_velocity = self.up_down_velocity = \
-                    self.left_right_velocity = self.yaw_velocity = 0
+                rospy.loginfo("Unsupported gesture id:-1")
+            else:
+                rospy.loginfo("Unknown gesture id %d", gesture_id)
+                
+                
 
-            self.tello.send_rc_control(self.left_right_velocity, self.forw_back_velocity,
-                                       self.up_down_velocity, self.yaw_velocity)
