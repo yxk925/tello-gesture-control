@@ -106,8 +106,6 @@ def main():
     number = -1
     battery_status = -1
 
-    tello.move_down(20)
-
     rate = rospy.Rate(30) # hz
     while not rospy.is_shutdown():
         fps = cv_fps_calc.get()

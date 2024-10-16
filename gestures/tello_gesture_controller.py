@@ -12,6 +12,7 @@ class TelloGestureController:
         self.up_down_velocity = 0
         self.left_right_velocity = 0
         self.yaw_velocity = 0
+        self.turnAngle = 3.1415926 / 6
 
     def gesture_control(self, gesture_buffer):
         gesture_id = gesture_buffer.get_gesture()
@@ -25,24 +26,25 @@ class TelloGestureController:
             if gesture_id == 0:  # Forward
                 self.move_agent.stop()
             elif gesture_id == 1:  # STOP
-                rospy.loginfo("Unsupport STOP")
-                #self.move_agent.stop()
+                #rospy.loginfo("Unsupport STOP")
+                self.move_agent.forward(0.3)
             if gesture_id == 5:  # Back
                 self.move_agent.forward(0.3)
 
             elif gesture_id == 2:  # UP
                 self.move_agent.backward(0.3)
             elif gesture_id == 4:  # DOWN
-                rospy.loginfo("Unsupport DOWN")
+                self.move_agent.forward(0.3)
+                
                 
 
             elif gesture_id == 3:  # LAND
                 rospy.loginfo("Unsupport LAND")
 
             elif gesture_id == 6: # LEFT
-                self.move_agent.turnLeft()
+                self.move_agent.turnLeft(self.turnAngle)
             elif gesture_id == 7: # RIGHT
-                self.move_agent.turnRight()
+                self.move_agent.turnRight(self.turnAngle)
             elif gesture_id == -1:
                 rospy.loginfo("Unsupported gesture id:-1")
             else:

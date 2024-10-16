@@ -39,16 +39,18 @@ class MoveAgent:
     cmd.param = str(distance)
     self.pub_cmd(cmd)
     
-  def turnLeft(self):
-    rospy.loginfo("turn left")
+  def turnLeft(self, angle):
+    rospy.loginfo("turn left %f", angle)
     cmd = MoveCmd()
     cmd.cmd = MoveCmd.kTurnLeft
+    cmd.param = str(angle)
     self.pub_cmd(cmd)
   
-  def turnRight(self):
-    rospy.loginfo("turn right")
+  def turnRight(self, angle):
+    rospy.loginfo("turn right %f", angle)
     cmd = MoveCmd()
     cmd.cmd = MoveCmd.kTurnRight
+    cmd.param = str(angle)
     self.pub_cmd(cmd)
   
   def stop(self):
