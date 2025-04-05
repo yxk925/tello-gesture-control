@@ -61,7 +61,8 @@ def main():
 
     # Argument parsing
     args = get_args()
-    KEYBOARD_CONTROL = args.is_keyboard
+    # print("args.is_keyboard: ", args.is_keyboard)
+    KEYBOARD_CONTROL = False # args.is_keyboard
     WRITE_CONTROL = False
     in_flight = False
     
