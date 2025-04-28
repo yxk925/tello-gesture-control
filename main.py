@@ -13,6 +13,8 @@ from gestures import *
 
 import threading
 import time
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
 
 
 def get_args():
@@ -73,7 +75,15 @@ def main():
     tello.connect()
     tello.streamon()
 
-    cap = cv.VideoCapture(0) 
+    bridge = CvBridge()
+    image_topic = "/cv_camera/image_raw"
+    image_msg = None
+
+    def image_callback(msg):
+        nonlocal image_msg
+        image_msg = msg
+
+    rospy.Subscriber(image_topic, Image, image_callback)
 
     # Init Tello Controllers
     gesture_controller = TelloGestureController(tello)
@@ -144,12 +154,15 @@ def main():
                 number = key - 48
 
         # Camera capture
-        success, image = cap.read()
+        if image_msg is None:
+            print("No image received!")
+            continue
 
-        # Ensure file was read successfully
-        if not success:
-            print("bad read!")
-            break
+        try:
+            image = bridge.imgmsg_to_cv2(image_msg, "bgr8")
+        except CvBridgeError as e:
+            print(f"Error converting ROS Image message to OpenCV image: {e}")
+            continue
 
         debug_image, gesture_id = gesture_detector.recognize(image, number, mode)
         gesture_buffer.add_gesture(gesture_id)
