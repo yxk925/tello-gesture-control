@@ -76,7 +76,7 @@ def main():
     tello.streamon()
 
     bridge = CvBridge()
-    image_topic = "/cv_camera/image_raw"
+    image_topic = "/camera/color/image_raw"
     image_msg = None
 
     def image_callback(msg):
